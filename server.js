@@ -27,6 +27,11 @@ app.get('/api/notes', (req, res) =>
     res.sendFile(path.join(__dirname, './db/db.json'))
 );
 
+// Catch-all to serve up the homescreen for any other urls
+app.get('*', (req, res) =>
+    res.sendFile(path.join(__dirname, './public/index.html'))
+);
+
 // Listen for a post to this address
 app.post('/api/notes', (req, res) => {
     // Destructure the request body into variables
