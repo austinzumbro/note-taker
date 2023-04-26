@@ -1,8 +1,9 @@
 const express = require("express");
 const path = require('path');
-const fs = require('fs');
+const fs = require('fs').promises;
 const util = require('util');
-const readFile = util.promisify(fs.readFile);
+const readFile = async (path) => await fs.readFile(path, "utf8");
+const writeFile = async (path, data) => await fs.writeFile(path, data);
 
 const PORT = 3001;
 const app = express();
@@ -34,27 +35,22 @@ app.post('/api/notes', (req, res) => {
             title,
             text
         }
-        // get the current database out of json
-        fs.readFile(path.join(__dirname, "./db/db.json"), "utf8", (err, data) => {
-            if (err) {
-                console.error(err);
-            } else {
-                const parsedNotes = JSON.parse(data);
-                parsedNotes.push(newNote);
-                fs.writeFile(
-                    path.join(__dirname, "./db/db.json"),
-                    JSON.stringify(parsedNotes, null, 4),
-                    (writeErr) => {
-                        if (writeErr) {
-                            throw writeErr;
-                        } else {
-                            console.info('Note successfully saved.');
-                            res.send("Note successfully saved.");
-                        }
-                    }
-                );
-            }
-        });
+
+        readFile(path.join(__dirname, "./db/db.json"))
+            .then((text) => {
+                const notes = JSON.parse(text);
+                notes.push(newNote);
+                return JSON.stringify(notes, null, 4);
+            })
+            .then((notes) => {
+                writeFile(path.join(__dirname, "./db/db.json"), notes)
+            })
+            .then(() => {
+                console.info('Note successfully saved.');
+                res.send("Note successfully saved.");
+            })
+            .catch((err) => console.error(err))
+
     } else {
         // otherwise, respond with an error
         res.status(500).json('Error occurred while saving the note.');
