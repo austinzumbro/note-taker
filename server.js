@@ -41,7 +41,7 @@ app.post('/api/notes', (req, res) => {
                 const notes = JSON.parse(text);
                 notes.push(newNote);
                 notes.forEach((obj, index) => {
-                    obj.id = index;
+                    obj.id = index + 1;
                 });
                 return JSON.stringify(notes, null, 4);
             })
@@ -72,7 +72,7 @@ app.delete('/api/notes/:id', (req, res) => {
             const newNotes = notes.filter(obj => obj.id != deleteID);
             console.log("new notes", newNotes);
             newNotes.forEach((obj, index) => {
-                obj.id = index;
+                obj.id = index + 1;
             });
             return JSON.stringify(newNotes, null, 4);
         })
