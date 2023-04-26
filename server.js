@@ -18,7 +18,7 @@ app.get('/', (req, res) =>
 );
 
 app.get('/notes', (req, res) =>
-    res.sendFile(path.join(__dirname, 'public/notes.html'))
+    res.sendFile(path.join(__dirname, './public/notes.html'))
 );
 
 app.get('/api/notes', (req, res) =>
@@ -40,6 +40,9 @@ app.post('/api/notes', (req, res) => {
             .then((text) => {
                 const notes = JSON.parse(text);
                 notes.push(newNote);
+                notes.forEach((obj, index) => {
+                    obj.id = index;
+                });
                 return JSON.stringify(notes, null, 4);
             })
             .then((notes) => {
@@ -56,6 +59,32 @@ app.post('/api/notes', (req, res) => {
         res.status(500).json('Error occurred while saving the note.');
     }
 });
+
+app.delete('/api/notes/:id', (req, res) => {
+    let deleteID = req.params.id;
+    console.log(deleteID);
+
+    readFile(path.join(__dirname, "./db/db.json"))
+        .then((text) => {
+            const notes = JSON.parse(text);
+            console.log("original notes", notes);
+            console.log("delete id", deleteID);
+            const newNotes = notes.filter(obj => obj.id != deleteID);
+            console.log("new notes", newNotes);
+            newNotes.forEach((obj, index) => {
+                obj.id = index;
+            });
+            return JSON.stringify(newNotes, null, 4);
+        })
+        .then((notes) => {
+            writeFile(path.join(__dirname, "./db/db.json"), notes)
+        })
+        .then(() => {
+            console.info('Note successfully deleted.');
+            res.send("Note successfully deleted.");
+        })
+        .catch((err) => console.error(err))
+})
 
 app.listen(PORT, () =>
     console.log(`App listening at http://localhost:${PORT}`)

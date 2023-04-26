@@ -1,18 +1,17 @@
 [
-    {
-        "title": "Test Title",
-        "text": "Test text"
-    },
-    {
-        "title": "Note 5",
-        "text": "555"
-    },
-    {
-        "title": "Note 88",
-        "text": "Text for note 88"
-    },
-    {
-        "title": "Note 63",
-        "text": "test 63"
-    }
+  {
+    "title": "Test Title",
+    "text": "Test text",
+    "id": 0
+  },
+  {
+    "title": "New Note",
+    "text": "Totally a new note",
+    "id": 1
+  },
+  {
+    "title": "Another New Note",
+    "text": "Why is the Test Title note not working?",
+    "id": 2
+  }
 ]
