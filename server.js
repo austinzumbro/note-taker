@@ -1,11 +1,10 @@
 const express = require("express");
 const path = require('path');
 const fs = require('fs').promises;
-const util = require('util');
 const readFile = async (path) => await fs.readFile(path, "utf8");
 const writeFile = async (path, data) => await fs.writeFile(path, data);
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 const app = express();
 
 app.use(express.json());
@@ -13,29 +12,32 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(express.static("public"));
 
+// Serve up index.html as the homescreen
 app.get('/', (req, res) =>
     res.sendFile(path.join(__dirname, './public/index.html'))
 );
 
+// Serve up notes.html when this url is requested
 app.get('/notes', (req, res) =>
     res.sendFile(path.join(__dirname, './public/notes.html'))
 );
 
+// Serve up the db.json file when this url is requested
 app.get('/api/notes', (req, res) =>
     res.sendFile(path.join(__dirname, './db/db.json'))
 );
 
+// Listen for a post to this address
 app.post('/api/notes', (req, res) => {
-    // Destructure request body into variables
+    // Destructure the request body into variables
     const { title, text } = req.body;
-    // If the correct values were received...
+    // If the requisite values are received...
     if (title && text) {
-        // then create a new note object
+        // ...then create a newNote object.
         const newNote = {
             title,
             text
         }
-
         readFile(path.join(__dirname, "./db/db.json"))
             .then((text) => {
                 const notes = JSON.parse(text);
