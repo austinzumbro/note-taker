@@ -7,19 +7,6 @@ const readFile = util.promisify(fs.readFile);
 const PORT = 3001;
 const app = express();
 
-const getDB = () => {
-    readFile(path.join(__dirname, "./db/db.json"), "utf8")
-        .then((file) => {
-            return JSON.parse(file);
-        })
-        .then((data) => {
-            return data;
-        })
-        .catch((err) => {
-            console.error(err);
-        });
-}
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -38,28 +25,36 @@ app.get('/api/notes', (req, res) =>
 );
 
 app.post('/api/notes', (req, res) => {
-    // Pull in the current state of the db.json
-    const db = getDB()
-    // destructure request body into variables
+    // Destructure request body into variables
     const { title, text } = req.body;
-    // if the correct values were received...
+    // If the correct values were received...
     if (title && text) {
         // then create a new note object
         const newNote = {
             title,
             text
         }
-        // append that object to the database
-        db.push(newNote);
-        // rewrite the database file
-        fs.writeFile(
-            path.join(__dirname, "./db/db.json"),
-            JSON.stringify(db, null, 4),
-            (writeErr) =>
-                writeErr
-                    ? console.error(writeErr)
-                    : console.info('Note successfully saved.')
-        );
+        // get the current database out of json
+        fs.readFile(path.join(__dirname, "./db/db.json"), "utf8", (err, data) => {
+            if (err) {
+                console.error(err);
+            } else {
+                const parsedNotes = JSON.parse(data);
+                parsedNotes.push(newNote);
+                fs.writeFile(
+                    path.join(__dirname, "./db/db.json"),
+                    JSON.stringify(parsedNotes, null, 4),
+                    (writeErr) => {
+                        if (writeErr) {
+                            throw writeErr;
+                        } else {
+                            console.info('Note successfully saved.');
+                            res.send("Note successfully saved.");
+                        }
+                    }
+                );
+            }
+        });
     } else {
         // otherwise, respond with an error
         res.status(500).json('Error occurred while saving the note.');
