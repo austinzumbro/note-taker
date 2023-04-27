@@ -23,9 +23,14 @@ app.get('/notes', (req, res) =>
 );
 
 // Serve up the db.json file when this url is requested
-app.get('/api/notes', (req, res) =>
-    res.sendFile(path.join(__dirname, './db/db.json'))
-);
+app.get('/api/notes', (req, res) => {
+
+    readFile(path.join(__dirname, './db/db.json'))
+        .then((data) => {
+            return res.send(JSON.parse(data));
+        })
+        .catch((err) => console.error(err))
+});
 
 // Catch-all to serve up the homescreen for any other urls
 app.get('*', (req, res) =>
@@ -74,10 +79,7 @@ app.delete('/api/notes/:id', (req, res) => {
     readFile(path.join(__dirname, "./db/db.json"))
         .then((text) => {
             const notes = JSON.parse(text);
-            console.log("original notes", notes);
-            console.log("delete id", deleteID);
             const newNotes = notes.filter(obj => obj.id != deleteID);
-            console.log("new notes", newNotes);
             newNotes.forEach((obj, index) => {
                 obj.id = index + 1;
             });
