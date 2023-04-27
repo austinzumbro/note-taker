@@ -14,6 +14,19 @@ And here it is in action:
 
 ---
 
+## Usage
+
+- Once the app loads, hit "Get Started" to begin.
+- A list of notes appears along the left side.
+- Click directly on a note to view its contents
+- Click on the trash icon to delete a note
+- To create a new note, hit the "+" icon in the upper right
+    - Enter your Note Title
+    - Enter your Note Text
+    - Click the disk icon that appears to save your note
+
+---
+
 ## My Approach
 
 ## Routing
@@ -128,3 +141,9 @@ readFile(path.join(__dirname, "./db/db.json"))
 ```
 
 ---
+## Learnings / Reflections
+
+- Working with the server environment is so fun!  It feels like I'm really getting into the real meat of things now. 
+- Data persistance is going to open up a whole new world of stuff I can make. 
+- I'll be looking at setting up a relational database next, probably working with MySQL since I'm more familiar with that.
+- I need to learn more about asynchronicity and how it plays in larger, more complicated production context.  I have kind of a surface-level understanding, but a deeper sense of the nuance would help me feel more confident.
