@@ -10,7 +10,7 @@ This week, I'm getting into the basics of Express.js routing and methods.  The p
 
 And here it is in action:  
 [Deployed on Heroku](https://azumbro-note-taker.herokuapp.com/)  
-[Gif of the working app]
+![GIF of the working app](/images/app-in-use.gif)
 
 ---
 
